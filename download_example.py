@@ -1,12 +1,13 @@
 """
 Pexels下载器使用示例
-展示了几种不同的下载方式和配置方法
+支持命令行参数来指定下载选项
 """
 from pexels.downloader import PexelsDownloader
 from pexels import config
 from loguru import logger
 import sys
 import os
+import argparse
 
 def setup_logger():
     """配置日志输出"""
@@ -31,134 +32,82 @@ def setup_logger():
         level="DEBUG"         # 记录所有级别的日志
     )
 
-def example_1_simple():
-    """示例1：最简单的使用方式"""
-    logger.info("开始示例1：简单下载")
+def download_images(resolution=None, category=None, keywords=None):
+    """下载指定分辨率和类别的图片
+    Args:
+        resolution: 分辨率要求 ('4K' 或 '8K')
+        category: 自定义分类名称
+        keywords: 搜索关键词列表
+    """
     downloader = PexelsDownloader()
     
-    # 下载单个关键词的图片
-    keywords = ['modern interior']
-    downloader.process_category('interior', keywords, content_type='photos')
-
-def example_2_multiple_keywords():
-    """示例2：下载多个关键词的图片"""
-    logger.info("开始示例2：多关键词下载")
-    downloader = PexelsDownloader()
-    
-    # 定义多个关键词
-    categories = {
-        'nature': ['forest', 'mountain', 'ocean'],
-        'city': ['modern city', 'night city'],
-        'food': ['healthy food', 'dessert']
-    }
-    
-    # 下载每个分类的图片
-    for category, keywords in categories.items():
-        try:
-            logger.info(f"开始下载分类: {category}")
-            downloader.process_category(category, keywords, content_type='photos')
-        except Exception as e:
-            logger.error(f"下载分类 {category} 时出错: {str(e)}")
-            continue
-
-def example_3_photos_and_videos():
-    """示例3：同时下载图片和视频"""
-    logger.info("开始示例3：图片和视频下载")
-    downloader = PexelsDownloader()
-    
-    # 定义要下载的关键词
-    keywords = ['coffee shop']
-    category = 'business'
-    
-    # 下载图片
-    logger.info("下载图片...")
-    downloader.process_category(category, keywords, content_type='photos')
-    
-    # 下载视频
-    logger.info("下载视频...")
-    downloader.process_category(category, keywords, content_type='videos')
-
-def example_4_with_config():
-    """示例4：使用配置文件中的分类"""
-    logger.info("开始示例4：使用配置文件")
-    downloader = PexelsDownloader()
-    
-    # 使用配置文件中定义的分类
-    categories = config.CATEGORIES
-    
-    for category, keywords in categories.items():
-        try:
-            logger.info(f"开始下载配置文件中的分类: {category}")
-            downloader.process_category(category, keywords, content_type='photos')
-        except Exception as e:
-            logger.error(f"下载分类 {category} 时出错: {str(e)}")
-            continue
-
-def example_5_custom_settings():
-    """示例5：自定义下载设置"""
-    logger.info("开始示例5：自定义设置")
-    downloader = PexelsDownloader()
-    
-    # 修改配置
-    config.PER_PAGE = 30                 # 每页30张图片
-    config.MAX_PAGES_PER_CATEGORY = 2    # 每个分类下载2页
-    config.DEFAULT_SEARCH_PARAMS.update({
-        'orientation': 'landscape',       # 只下载横向图片
-        'size': 'large'                  # 只下载大尺寸图片
-    })
-    
-    # 下载图片
-    keywords = ['nature landscape']
-    downloader.process_category('nature', keywords, content_type='photos')
-
-def example_6_high_resolution():
-    """示例6：下载高分辨率图片"""
-    logger.info("开始示例6：下载4K及以上分辨率图片")
-    downloader = PexelsDownloader()
-    
-    # 下载4K分辨率的图片
-    keywords = ['landscape', 'nature']
-    downloader.process_category('high_res', keywords, content_type='photos', resolution_filter='4K')
-    
-    # 下载8K分辨率的图片
-    # downloader.process_category('ultra_high_res', keywords, content_type='photos', resolution_filter='8K')
+    if not keywords:
+        # 默认的搜索关键词
+        categories = {
+            'landscape': ['mountain landscape', 'aerial landscape', 'forest landscape'],
+            'nature': ['wilderness', 'national park', 'scenic vista'],
+            'architecture': ['modern architecture', 'skyscraper', 'cityscape'],
+            'aerial': ['drone photography', 'aerial view', 'bird eye view']
+        }
+        
+        # 如果指定了category，只下载该分类
+        if category and category in categories:
+            categories = {category: categories[category]}
+        
+        # 遍历每个分类下载图片
+        for cat, kwords in categories.items():
+            logger.info(f"下载分类 '{cat}' 的图片")
+            downloader.process_category(
+                category=cat,
+                keywords=kwords,
+                content_type='photos',
+                resolution_filter=resolution
+            )
+    else:
+        # 使用用户指定的关键词
+        category = category or 'custom'
+        logger.info(f"使用关键词 {keywords} 下载图片")
+        downloader.process_category(
+            category=category,
+            keywords=keywords,
+            content_type='photos',
+            resolution_filter=resolution
+        )
 
 def main():
-    """主函数：运行所有示例"""
-    # 创建日志目录
-    os.makedirs("logs", exist_ok=True)
+    """主函数：处理命令行参数并执行下载"""
+    parser = argparse.ArgumentParser(description='Pexels图片下载工具')
+    
+    parser.add_argument('--resolution', '-r',
+                      choices=['4K', '8K'],
+                      help='指定下载的图片分辨率 (4K 或 8K)')
+    
+    parser.add_argument('--category', '-c',
+                      choices=['landscape', 'nature', 'architecture', 'aerial'],
+                      help='指定下载的图片分类')
+    
+    parser.add_argument('--keywords', '-k',
+                      nargs='+',
+                      help='指定搜索关键词，可以提供多个，用空格分隔')
+    
+    args = parser.parse_args()
     
     # 设置日志
     setup_logger()
     
-    # 运行示例
-    logger.info("=== 开始运行下载示例 ===")
-    
     try:
-        # 示例1：简单下载
-        # example_1_simple()
-        
-        # 示例2：多关键词下载
-        # example_2_multiple_keywords()
-        
-        # 示例3：图片和视频下载
-        # example_3_photos_and_videos()
-        
-        # 示例4：使用配置文件
-        # example_4_with_config()
-        
-        # 示例5：自定义设置
-        # example_5_custom_settings()
-        
-        # 示例6：下载高分辨率图片
-        example_6_high_resolution()
-        
+        # 执行下载
+        download_images(
+            resolution=args.resolution,
+            category=args.category,
+            keywords=args.keywords
+        )
     except KeyboardInterrupt:
         logger.warning("用户中断下载")
     except Exception as e:
-        logger.error(f"运行示例时出错: {str(e)}")
+        logger.error(f"下载出错: {str(e)}")
     finally:
-        logger.info("=== 下载示例结束 ===")
+        logger.info("下载完成")
 
 if __name__ == '__main__':
     main()
