@@ -5,9 +5,8 @@ import os
 import yaml
 
 # Base paths
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # pexels目录
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-DOWNLOAD_DIR = os.path.join(BASE_DIR, 'download')  # 下载目录改为pexels/download
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DOWNLOAD_DIR = os.path.join(BASE_DIR, 'download')
 
 # API Configuration
 HEADERS = {
@@ -19,7 +18,7 @@ HEADERS = {
 PER_PAGE = 24
 MAX_RETRIES = 3
 RETRY_DELAY = 1  # seconds
-MAX_PAGES_PER_CATEGORY = 10  # 每个分类最多下载页数
+MAX_PAGES_PER_CATEGORY = 1  # 每个分类最多下载页数
 
 # API Endpoints
 ENDPOINTS = {
@@ -29,17 +28,18 @@ ENDPOINTS = {
 
 # Search Parameters
 DEFAULT_SEARCH_PARAMS = {
+    'page': '1',
+    'per_page': str(PER_PAGE),
     'orientation': 'all',
     'size': 'all',
     'color': 'all',
     'sort': 'popular',
-    'seo_tags': 'true',
-    'per_page': str(PER_PAGE)
+    'seo_tags': 'true'
 }
 
 # Load categories from YAML file
 def load_categories():
-    categories_file = os.path.join(CURRENT_DIR, 'categories.yaml')
+    categories_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'categories.yaml')
     try:
         with open(categories_file, 'r', encoding='utf-8') as f:
             return yaml.safe_load(f)
@@ -48,4 +48,8 @@ def load_categories():
         return {}
 
 # Categories Configuration
-CATEGORIES = load_categories()
+CATEGORIES = {
+    'interior': [
+        'modern interior'  # 测试关键词
+    ]
+}
