@@ -1,0 +1,5 @@
+python-dotenv==1.0.0
+requests==2.31.0
+pexels-api==1.0.1
+tqdm==4.66.1
+pillow==10.1.0
