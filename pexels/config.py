@@ -12,7 +12,7 @@ DOWNLOAD_DIR = os.path.join(BASE_DIR, 'download')      # 下载文件保存的�
 # API请求头配置
 HEADERS = {
     'Accept-Language': 'en-US,en;q=0.9',  # 请求语言设置
-    'Secret-Key': 'H2jk9uKnhRmL6WPwh89zBezWvr'  # API密钥
+    'Secret-Key': 'dESvTyqCMdAFgmvWMP1N9d4rOoCWyfE3d52PFleYdrZlz0MUBjrFHbFg'  # API密钥
 }
 
 # 下载配置参数

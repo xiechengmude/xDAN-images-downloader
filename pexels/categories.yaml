@@ -1,61 +1,108 @@
 # Interior Design Categories
-interior:
-  - minimalist interior
-  - luxury interior
-  - scandinavian interior
-  - industrial interior
+modern:
+  - modern minimalist interior
+  - modern luxury interior
+  - modern industrial interior
+  - modern scandinavian interior
+  - modern contemporary interior
+  - modern office design
+  - modern home decor
 
-living_room:
-  - modern living room
+minimalist:
   - minimalist living room
-  - luxury living room
-  - cozy living room
-  - contemporary living room
-  - scandinavian living room
-
-bedroom:
-  - modern bedroom
+  - minimalist kitchen design
   - minimalist bedroom
-  - luxury bedroom
-  - cozy bedroom
-  - master bedroom
+  - minimalist home office
+  - minimalist bathroom
+  - minimalist apartment
+  - minimalist studio
+
+luxury:
+  - luxury penthouse
+  - luxury villa interior
+  - luxury master bedroom
+  - luxury bathroom design
+  - luxury kitchen interior
+  - luxury living space
+  - luxury home office
+
+scandinavian:
+  - scandinavian living room
   - scandinavian bedroom
+  - scandinavian kitchen
+  - scandinavian bathroom
+  - scandinavian workspace
+  - scandinavian apartment
+  - scandinavian home decor
+
+industrial:
+  - industrial loft
+  - industrial kitchen
+  - industrial living room
+  - industrial office space
+  - industrial bedroom
+  - industrial bathroom
+  - industrial style home
+
+contemporary:
+  - contemporary apartment
+  - contemporary living room
+  - contemporary kitchen design
+  - contemporary bedroom
+  - contemporary office
+  - contemporary bathroom
+  - contemporary home
+
+living_spaces:
+  - open plan living
+  - small apartment design
+  - studio apartment
+  - loft apartment
+  - duplex interior
+  - penthouse design
+  - townhouse interior
 
 kitchen:
-  - modern kitchen
+  - gourmet kitchen
+  - modern kitchen design
   - minimalist kitchen
   - luxury kitchen
   - industrial kitchen
-  - contemporary kitchen
   - scandinavian kitchen
+  - contemporary kitchen
 
 bathroom:
-  - modern bathroom
-  - minimalist bathroom
-  - luxury bathroom
   - spa bathroom
-  - contemporary bathroom
-  - scandinavian bathroom
+  - modern bathroom design
+  - luxury bathroom
+  - minimalist bathroom
+  - hotel bathroom
+  - master bathroom
+  - powder room
+
+bedroom:
+  - master bedroom
+  - minimalist bedroom
+  - luxury bedroom suite
+  - guest bedroom
+  - modern bedroom
+  - scandinavian bedroom
+  - industrial bedroom
 
 office:
-  - modern office
-  - home office
+  - home office design
+  - modern workspace
   - minimalist office
-  - creative office
-  - contemporary office
-  - scandinavian office
-
-dining_room:
-  - modern dining room
-  - minimalist dining room
-  - luxury dining room
-  - contemporary dining room
-  - scandinavian dining room
+  - luxury office
+  - creative office space
+  - corporate office
+  - studio office
 
 outdoor:
   - modern patio
-  - outdoor living space
-  - garden design
-  - landscape design
-  - terrace design
+  - luxury terrace
+  - rooftop garden
   - balcony design
+  - outdoor living space
+  - garden lounge
+  - pool area
