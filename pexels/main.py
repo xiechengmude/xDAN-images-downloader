@@ -2,8 +2,8 @@
 Main script to run the Pexels downloader
 """
 from loguru import logger
-from downloader import PexelsDownloader
-from category_manager import CategoryManager
+from .downloader import PexelsDownloader
+from .category_manager import CategoryManager
 import argparse
 
 def main():
@@ -35,7 +35,7 @@ def main():
         # 处理下载
         if args.category:
             # 下载特定分类
-            from config import CATEGORIES
+            from .config import CATEGORIES
             if args.category in CATEGORIES:
                 logger.info(f"Downloading category: {args.category}")
                 downloader.process_category(args.category, CATEGORIES[args.category], args.type)
