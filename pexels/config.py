@@ -27,12 +27,24 @@ ENDPOINTS = {
     'videos': 'https://www.pexels.com/en-us/api/v3/search/videos'   # 视频搜索API端点
 }
 
+# 分辨率配置
+RESOLUTION_FILTERS = {
+    '4K': {
+        'min_width': 3840,
+        'min_height': 2160
+    },
+    '8K': {
+        'min_width': 7680,
+        'min_height': 4320
+    }
+}
+
 # 搜索参数默认值
 DEFAULT_SEARCH_PARAMS = {
     'page': '1',              # 页码，从1开始
     'per_page': str(PER_PAGE),# 每页数量
     'orientation': 'all',     # 图片方向：all-所有方向
-    'size': 'all',           # 图片尺寸：all-所有尺寸
+    'size': 'large',         # 图片尺寸：large-获取最大尺寸
     'color': 'all',          # 颜色筛选：all-所有颜色
     'sort': 'popular',       # 排序方式：popular-按热度排序
     'seo_tags': 'true'       # 是否返回SEO标签
@@ -48,15 +60,12 @@ CATEGORIES = {
 
 # 从YAML文件加载分类配置
 def load_categories():
-    """
-    从categories.yaml文件加载分类配置
-    Returns:
-        dict: 包含分类和关键词的字典
-    """
-    categories_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'categories.yaml')
-    try:
+    """从YAML文件加载分类配置"""
+    categories_file = os.path.join(BASE_DIR, 'categories.yaml')
+    if os.path.exists(categories_file):
         with open(categories_file, 'r', encoding='utf-8') as f:
             return yaml.safe_load(f)
-    except Exception as e:
-        print(f"Error loading categories: {str(e)}")
-        return {}
+    return CATEGORIES
+
+# 加载分类配置
+CATEGORIES = load_categories()

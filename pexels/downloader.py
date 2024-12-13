@@ -56,8 +56,14 @@ class PexelsDownloader:
         
         self._download_stats.log_summary()
     
-    def process_category(self, category: str, keywords: List[str], content_type: str):
-        """处理单个分类"""
+    def process_category(self, category: str, keywords: List[str], content_type: str, resolution_filter: str = None):
+        """处理单个分类
+        Args:
+            category: 分类名称
+            keywords: 关键词列表
+            content_type: 内容类型 ('photos' 或 'videos')
+            resolution_filter: 分辨率筛选 ('4K' 或 '8K')
+        """
         logger.info(f"Processing category: {category}")
         
         for keyword in keywords:
@@ -75,7 +81,29 @@ class PexelsDownloader:
                         
                     if page >= total_pages:
                         break
+                    
+                    # 筛选符合分辨率要求的内容
+                    if resolution_filter and resolution_filter in config.RESOLUTION_FILTERS:
+                        min_width = config.RESOLUTION_FILTERS[resolution_filter]['min_width']
+                        min_height = config.RESOLUTION_FILTERS[resolution_filter]['min_height']
                         
+                        filtered_data = []
+                        for item in data:
+                            if content_type == 'photos':
+                                width = item['attributes']['width']
+                                height = item['attributes']['height']
+                            else:  # videos
+                                width = item['attributes']['video']['width']
+                                height = item['attributes']['video']['height']
+                            
+                            if width >= min_width and height >= min_height:
+                                filtered_data.append(item)
+                                logger.debug(f"Found {resolution_filter} content: {width}x{height}")
+                        
+                        data = filtered_data
+                        if not data:
+                            logger.warning(f"No {resolution_filter} content found on page {page}")
+                    
                     self._download_batch(data, category, keyword, content_type)
                     page += 1
                     

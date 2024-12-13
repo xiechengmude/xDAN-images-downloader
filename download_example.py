@@ -111,6 +111,18 @@ def example_5_custom_settings():
     keywords = ['nature landscape']
     downloader.process_category('nature', keywords, content_type='photos')
 
+def example_6_high_resolution():
+    """示例6：下载高分辨率图片"""
+    logger.info("开始示例6：下载4K及以上分辨率图片")
+    downloader = PexelsDownloader()
+    
+    # 下载4K分辨率的图片
+    keywords = ['landscape', 'nature']
+    downloader.process_category('high_res', keywords, content_type='photos', resolution_filter='4K')
+    
+    # 下载8K分辨率的图片
+    # downloader.process_category('ultra_high_res', keywords, content_type='photos', resolution_filter='8K')
+
 def main():
     """主函数：运行所有示例"""
     # 创建日志目录
@@ -124,7 +136,7 @@ def main():
     
     try:
         # 示例1：简单下载
-        example_1_simple()
+        # example_1_simple()
         
         # 示例2：多关键词下载
         # example_2_multiple_keywords()
@@ -137,6 +149,9 @@ def main():
         
         # 示例5：自定义设置
         # example_5_custom_settings()
+        
+        # 示例6：下载高分辨率图片
+        example_6_high_resolution()
         
     except KeyboardInterrupt:
         logger.warning("用户中断下载")
