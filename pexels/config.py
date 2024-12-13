@@ -5,8 +5,9 @@ import os
 import yaml
 
 # Base paths
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # pexels目录
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+DOWNLOAD_DIR = os.path.join(BASE_DIR, 'download')  # 下载目录改为pexels/download
 
 # API Configuration
 HEADERS = {
@@ -15,7 +16,6 @@ HEADERS = {
 }
 
 # Download Configuration
-DOWNLOAD_DIR = os.path.join(BASE_DIR, 'download')
 PER_PAGE = 24
 MAX_RETRIES = 3
 RETRY_DELAY = 1  # seconds
