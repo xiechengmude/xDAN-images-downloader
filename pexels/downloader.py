@@ -106,59 +106,82 @@ class PexelsDownloader:
         return data.get('data', []), data.get('pagination', {}).get('total_pages', 1)
 
     def _download_batch(self, items: List[Dict], category: str, keyword: str, content_type: str):
-        """批量下载内容"""
+        """批量下载内容，使用线程池并行下载"""
         save_dir = os.path.join(
             config.DOWNLOAD_DIR,
             content_type,
+            category,
             keyword.replace(' ', '_').lower()
         )
         os.makedirs(save_dir, exist_ok=True)
         
-        with tqdm(
-            total=len(items),
-            desc=f"{category}/{keyword}",
-            unit='file',
-            position=0,
-            leave=True,
-            bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]'
-        ) as main_pbar:
+        # 创建线程池，最多20个并发下载
+        with ThreadPoolExecutor(max_workers=20) as executor:
+            futures = []
             
-            for index, item in enumerate(items, 1):
-                try:
-                    if content_type == 'photos':
-                        download_link = item['attributes']['image']['download_link']
-                        file_name = re.search('dl=(.*)&', download_link).group(1)
-                    else:
-                        download_link = item['attributes']['video']['download_link']
-                        file_name = ''
+            with tqdm(
+                total=len(items),
+                desc=f"{category}/{keyword}",
+                unit='file',
+                position=0,
+                leave=True,
+                bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]'
+            ) as main_pbar:
+                
+                # 提交所有下载任务到线程池
+                for index, item in enumerate(items, 1):
+                    try:
+                        if content_type == 'photos':
+                            download_link = item['attributes']['image']['download_link']
+                            file_name = re.search('dl=(.*)&', download_link).group(1)
+                        else:
+                            download_link = item['attributes']['video']['download_link']
+                            file_name = f"video_{index}.mp4"
+                            
+                        file_name = unquote(file_name)
+                        save_path = os.path.join(save_dir, file_name)
                         
-                    file_name = unquote(file_name)
-                    save_path = os.path.join(save_dir, file_name)
-                    
-                    if os.path.exists(save_path) and os.path.getsize(save_path) > 0:
-                        logger.debug(f"File already exists: {save_path}")
+                        if os.path.exists(save_path) and os.path.getsize(save_path) > 0:
+                            logger.debug(f"File already exists: {save_path}")
+                            main_pbar.update(1)
+                            continue
+                        
+                        # 提交下载任务
+                        future = executor.submit(
+                            self._download_file,
+                            download_link,
+                            save_path,
+                            category,
+                            keyword
+                        )
+                        futures.append((future, file_name, index))
+                        
+                    except Exception as e:
+                        logger.error(f"Error submitting download for item {index}: {str(e)}")
+                        self._download_stats.increment_failure()
                         main_pbar.update(1)
-                        continue
-                    
-                    success = self._download_file(download_link, save_path, category, keyword)
-                    
-                    if success:
-                        logger.success(f'下载成功（{index}/{len(items)}）：{file_name}')
-                    else:
-                        logger.error(f'下载失败（{index}/{len(items)}）：{file_name}')
+                
+                # 等待所有下载任务完成
+                for future, file_name, index in futures:
+                    try:
+                        success = future.result()
+                        if success:
+                            logger.success(f'下载成功（{index}/{len(items)}）：{file_name}')
+                        else:
+                            logger.error(f'下载失败（{index}/{len(items)}）：{file_name}')
+                            
+                        main_pbar.update(1)
+                        main_pbar.set_postfix(
+                            completed=self._download_stats.success,
+                            failed=self._download_stats.failure,
+                            success_rate=f"{self._download_stats.success_rate():.1f}%"
+                        )
                         
-                    main_pbar.update(1)
-                    main_pbar.set_postfix(
-                        completed=self._download_stats.success,
-                        failed=self._download_stats.failure,
-                        success_rate=f"{self._download_stats.success_rate():.1f}%"
-                    )
-                    
-                except Exception as e:
-                    logger.error(f"Error downloading item {index}: {str(e)}")
-                    self._download_stats.increment_failure()
-                    main_pbar.update(1)
-    
+                    except Exception as e:
+                        logger.error(f"Error downloading item {index}: {str(e)}")
+                        self._download_stats.increment_failure()
+                        main_pbar.update(1)
+
     def _download_file(self, url: str, save_path: str, category: str, keyword: str) -> bool:
         """下载单个文件"""
         try:

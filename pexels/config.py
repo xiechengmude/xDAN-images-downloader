@@ -4,15 +4,17 @@ Pexels下载器配置文件
 """
 import os
 import yaml
+import logging
 
 # 基础路径配置
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # pexels模块的根目录
-DOWNLOAD_DIR = os.path.join(BASE_DIR, 'download')      # 下载文件保存的根目录
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # 项目根目录
+DOWNLOAD_DIR = os.path.join(PROJECT_DIR, 'download')      # 下载文件保存的根目录
 
 # API请求头配置
 HEADERS = {
     'Accept-Language': 'en-US,en;q=0.9',  # 请求语言设置
-    'Secret-Key': 'H2jk9uKnhRmL6WPwh89zBezWvr'  # API密钥
+    'Authorization': 'dESvTyqCMdAFgmvWMP1N9d4rOoCWyfE3d52PFleYdrZlz0MUBjrFHbFg'  # API密钥
 }
 
 # 下载配置参数
@@ -46,6 +48,9 @@ CATEGORIES = {
     ]
 }
 
+# 日志配置
+logger = logging.getLogger(__name__)
+
 # 从YAML文件加载分类配置
 def load_categories():
     """
@@ -53,10 +58,17 @@ def load_categories():
     Returns:
         dict: 包含分类和关键词的字典
     """
-    categories_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'categories.yaml')
+    # 先尝试加载项目根目录下的配置
+    categories_file = os.path.join(PROJECT_DIR, 'categories.yaml')
+    if not os.path.exists(categories_file):
+        # 如果不存在，则尝试加载pexels模块目录下的配置
+        categories_file = os.path.join(BASE_DIR, 'categories.yaml')
+    
     try:
         with open(categories_file, 'r', encoding='utf-8') as f:
-            return yaml.safe_load(f)
+            categories = yaml.safe_load(f)
+            logger.info(f"已加载分类配置: {categories_file}")
+            return categories
     except Exception as e:
-        print(f"Error loading categories: {str(e)}")
+        logger.error(f"加载分类配置失败: {str(e)}")
         return {}
