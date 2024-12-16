@@ -37,7 +37,7 @@ def example_1_simple():
     downloader = PexelsDownloader()
     
     # 下载单个关键词的图片
-    keywords = ['modern interior']
+    keywords = ['interior']
     downloader.process_category('interior', keywords, content_type='photos')
 
 def example_2_multiple_keywords():
@@ -108,8 +108,8 @@ def example_5_custom_settings():
     })
     
     # 下载图片
-    keywords = ['nature landscape']
-    downloader.process_category('nature', keywords, content_type='photos')
+    keywords = ['interior']
+    downloader.process_category('interior', keywords, content_type='photos')
 
 def main():
     """主函数：运行所有示例"""
