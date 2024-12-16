@@ -10,7 +10,8 @@ from . import config
 
 class CategoryManager:
     def __init__(self):
-        self.categories_file = os.path.join(config.CURRENT_DIR, 'categories.yaml')
+        """初始化分类管理器"""
+        self.categories_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'categories.yaml')
         self.headers = config.HEADERS
         
     def load_categories(self) -> Dict:
@@ -20,16 +21,28 @@ class CategoryManager:
                 return yaml.safe_load(f) or {}
         return {}
     
-    def save_categories(self, categories: Dict):
-        """保存分类到YAML文件"""
-        with open(self.categories_file, 'w', encoding='utf-8') as f:
-            yaml.dump(categories, f, allow_unicode=True, sort_keys=False)
-        logger.success(f"Categories saved to {self.categories_file}")
+    def save_categories(self, categories: Dict) -> None:
+        """保存分类到文件"""
+        if not categories:
+            logger.warning("No categories to save")
+            return
+            
+        try:
+            # 确保目录存在
+            os.makedirs(os.path.dirname(self.categories_file), exist_ok=True)
+            
+            # 保存分类
+            with open(self.categories_file, 'w', encoding='utf-8') as f:
+                yaml.dump(categories, f, allow_unicode=True, default_flow_style=False)
+            
+            logger.success(f"Categories saved to {self.categories_file}")
+        except Exception as e:
+            logger.error(f"Error saving categories: {str(e)}")
+            raise
     
     def discover_categories(self, base_keywords: List[str]) -> Dict:
         """发现新的分类和关键词"""
         discovered = {}
-        existing = self.load_categories()
         
         for base_keyword in base_keywords:
             logger.info(f"Discovering categories for: {base_keyword}")
@@ -37,20 +50,16 @@ class CategoryManager:
                 # 搜索基础关键词
                 related_terms = self._search_related_terms(base_keyword)
                 
-                # 对每个相关词进行二次搜索
-                for term in related_terms:
-                    sub_terms = self._search_related_terms(term)
-                    if sub_terms:
-                        category_name = term.lower().replace(' ', '_')
-                        discovered[category_name] = list(sub_terms)
+                # 将基础关键词作为主分类
+                category_name = base_keyword.lower().replace(' ', '_')
+                if related_terms:
+                    discovered[category_name] = sorted(list(related_terms))
                 
             except Exception as e:
                 logger.error(f"Error discovering categories for {base_keyword}: {str(e)}")
                 continue
         
-        # 合并现有分类和新发现的分类
-        merged = self._merge_categories(existing, discovered)
-        return merged
+        return discovered
     
     def _search_related_terms(self, keyword: str) -> Set[str]:
         """搜索相关词"""

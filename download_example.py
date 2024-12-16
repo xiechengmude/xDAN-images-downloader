@@ -124,7 +124,7 @@ def main():
     
     try:
         # 示例1：简单下载
-        example_1_simple()
+        # example_1_simple()
         
         # 示例2：多关键词下载
         # example_2_multiple_keywords()
@@ -133,7 +133,7 @@ def main():
         # example_3_photos_and_videos()
         
         # 示例4：使用配置文件
-        # example_4_with_config()
+        example_4_with_config()
         
         # 示例5：自定义设置
         # example_5_custom_settings()
