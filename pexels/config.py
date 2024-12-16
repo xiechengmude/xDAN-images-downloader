@@ -16,10 +16,10 @@ HEADERS = {
 }
 
 # 下载配置参数
-PER_PAGE = 24                  # 每页返回的图片/视频数量
+PER_PAGE = 300                  # 每页返回的图片/视频数量
 MAX_RETRIES = 3               # 下载失败时的最大重试次数
 RETRY_DELAY = 2               # 重试之间的等待时间（秒）
-MAX_PAGES_PER_CATEGORY = 100  # 每个分类最多下载的页数，防止过度请求
+MAX_PAGES_PER_CATEGORY = 10000  # 每个分类最多下载的页数，防止过度请求
 
 # API端点配置
 ENDPOINTS = {
@@ -42,7 +42,7 @@ DEFAULT_SEARCH_PARAMS = {
 # 可以在这里直接定义分类和关键词，也可以从categories.yaml文件加载
 CATEGORIES = {
     'interior': [
-        'modern interior'  # 测试关键词
+        'interior'  # 测试关键词
     ]
 }
 

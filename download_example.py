@@ -100,8 +100,8 @@ def example_5_custom_settings():
     downloader = PexelsDownloader()
     
     # 修改配置
-    config.PER_PAGE = 30                 # 每页30张图片
-    config.MAX_PAGES_PER_CATEGORY = 2    # 每个分类下载2页
+    config.PER_PAGE = 300                 # 每页30张图片
+    config.MAX_PAGES_PER_CATEGORY = 20000    # 每个分类下载2页
     config.DEFAULT_SEARCH_PARAMS.update({
         'orientation': 'landscape',       # 只下载横向图片
         'size': 'large'                  # 只下载大尺寸图片
