@@ -1,150 +1,76 @@
 # Interior Design Categories
-interior:
-  - minimalist interior
-  - luxury interior
-  - scandinavian interior
-  - industrial interior
-  - modern interior
-  - contemporary interior
-  - traditional interior
-  - rustic interior
-  - bohemian interior
-  - mid-century modern interior
-  - art deco interior
-  - japanese interior
-  - mediterranean interior
-  - french country interior
-  - coastal interior
-  - farmhouse interior
 
+# 直接使用分类名称搜索
+basic:
+  - ""  # 空字符串表示直接使用分类名称
+
+# 使用风格关键词搜索
+interior:
+  - minimalist
+  - luxury
+  - scandinavian
+  - industrial
+  - modern
+  - contemporary
+  - traditional
+  - rustic
+  - bohemian
+  - mid-century modern
+  - art deco
+  - japanese
+  - mediterranean
+  - french country
+  - coastal
+  - farmhouse
+
+# 直接搜索
+bathroom:
+  - ""
+
+# 带风格的搜索
+luxury_bathroom:
+  - minimalist
+  - luxury
+  - spa
+  - modern
+  - contemporary
+  - traditional
+  - mediterranean
+  - japanese
+
+# 直接搜索
+kitchen:
+  - ""
+
+# 带风格的搜索
+styled_kitchen:
+  - modern
+  - minimalist
+  - luxury
+  - industrial
+  - rustic
+  - traditional
+  - mediterranean
+  - french country
+  - farmhouse
+
+# 更多分类示例...
 living_room:
-  - modern living room
-  - minimalist living room
-  - luxury living room
-  - cozy living room
-  - contemporary living room
-  - scandinavian living room
-  - industrial living room
-  - rustic living room
-  - bohemian living room
-  - traditional living room
-  - mid-century modern living room
-  - art deco living room
-  - japanese living room
-  - mediterranean living room
-  - coastal living room
-  - farmhouse living room
+  - ""  # 直接搜索 living room
 
 bedroom:
-  - modern bedroom
-  - minimalist bedroom
-  - luxury bedroom
-  - cozy bedroom
-  - master bedroom
-  - scandinavian bedroom
-  - industrial bedroom
-  - rustic bedroom
-  - bohemian bedroom
-  - traditional bedroom
-  - mid-century modern bedroom
-  - art deco bedroom
-  - japanese bedroom
-  - mediterranean bedroom
-  - coastal bedroom
-  - farmhouse bedroom
-
-kitchen:
-  - modern kitchen
-  - minimalist kitchen
-  - luxury kitchen
-  - industrial kitchen
-  - contemporary kitchen
-  - scandinavian kitchen
-  - rustic kitchen
-  - traditional kitchen
-  - farmhouse kitchen
-  - mediterranean kitchen
-  - japanese kitchen
-  - french country kitchen
-  - coastal kitchen
-  - vintage kitchen
-  - mid-century modern kitchen
-  - art deco kitchen
-
-bathroom:
-  - modern bathroom
-  - minimalist bathroom
-  - luxury bathroom
-  - spa bathroom
-  - contemporary bathroom
-  - scandinavian bathroom
-  - industrial bathroom
-  - rustic bathroom
-  - traditional bathroom
-  - mediterranean bathroom
-  - japanese bathroom
-  - coastal bathroom
-  - farmhouse bathroom
-  - vintage bathroom
-  - art deco bathroom
-  - zen bathroom
-
-office:
-  - modern office
-  - home office
-  - minimalist office
-  - creative office
-  - contemporary office
-  - scandinavian office
-  - industrial office
-  - traditional office
-  - mid-century modern office
-  - art deco office
-  - rustic office
-  - luxury office
-  - japanese office
-  - vintage office
-  - coastal office
-  - farmhouse office
+  - ""  # 直接搜索 bedroom
 
 dining_room:
-  - modern dining room
-  - minimalist dining room
-  - luxury dining room
-  - contemporary dining room
-  - scandinavian dining room
-  - industrial dining room
-  - rustic dining room
-  - traditional dining room
-  - mid-century modern dining room
-  - art deco dining room
-  - mediterranean dining room
-  - japanese dining room
-  - french country dining room
-  - coastal dining room
-  - farmhouse dining room
-  - vintage dining room
+  - ""  # 直接搜索 dining room
 
+# 户外空间
 outdoor:
-  - modern patio
-  - outdoor living space
-  - garden design
-  - landscape design
-  - terrace design
-  - balcony design
-  - modern garden
-  - japanese garden
-  - mediterranean garden
-  - tropical garden
-  - contemporary landscape
-  - rustic patio
-  - modern pool
-  - outdoor kitchen
-  - rooftop garden
-  - zen garden
-  - backyard design
-  - front yard design
-  - outdoor lighting design
-  - outdoor furniture design
-  - garden decor
-  - outdoor decor
+  - garden
+  - landscape
+  - terrace
+  - balcony
+  - patio
+  - pool
+  - backyard
+  - front yard

@@ -35,13 +35,6 @@ DEFAULT_SEARCH_PARAMS = {
 }
 
 # 分类配置
-# 可以在这里直接定义分类和关键词，也可以从categories.yaml文件加载
-CATEGORIES = {
-    'interior': [
-        'modern interior'  # 测试关键词
-    ]
-}
-
 # 从YAML文件加载分类配置
 def load_categories():
     """
@@ -54,3 +47,6 @@ def load_categories():
         with open(categories_file, 'r', encoding='utf-8') as f:
             return yaml.safe_load(f)
     return {}
+
+# 加载分类配置
+CATEGORIES = load_categories()

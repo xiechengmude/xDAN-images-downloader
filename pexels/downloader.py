@@ -43,45 +43,73 @@ class PexelsDownloader:
         self._session.headers.update(config.HEADERS)
         self._download_stats = DownloadStats()
 
-    def download_all_categories(self, content_type: str):
-        """下载所有分类的内容"""
+    def download_all_categories(self, content_type: str, use_category_only: bool = False):
+        """下载所有分类的内容
+        Args:
+            content_type: 内容类型（photos/videos）
+            use_category_only: 是否只使用分类名称搜索，忽略关键词
+        """
         logger.info(f"Starting download for all categories, type: {content_type}")
         
         for category, keywords in config.CATEGORIES.items():
             try:
-                self.process_category(category, keywords, content_type)
+                self.process_category(category, keywords, content_type, use_category_only)
             except Exception as e:
                 logger.error(f"Error processing category {category}: {str(e)}")
                 continue
         
         self._download_stats.log_summary()
     
-    def process_category(self, category: str, keywords: List[str], content_type: str):
-        """处理单个分类"""
+    def process_category(self, category: str, keywords: List[str], content_type: str, use_category_only: bool = False):
+        """处理单个分类
+        Args:
+            category: 分类名称
+            keywords: 关键词列表
+            content_type: 内容类型（photos/videos）
+            use_category_only: 是否只使用分类名称搜索，忽略关键词
+        """
         logger.info(f"Processing category: {category}")
         
-        for keyword in keywords:
-            params = config.DEFAULT_SEARCH_PARAMS.copy()
-            params['query'] = keyword
+        # 如果设置了只使用分类名称，或关键词列表为空
+        if use_category_only or not keywords or (len(keywords) == 1 and not keywords[0].strip()):
+            self._process_single_keyword(category, category, content_type)
+            return
             
-            page = 1
-            while page <= config.MAX_PAGES_PER_CATEGORY:
-                try:
-                    data, total_pages = self._search_content(keyword, content_type, page)
-                    
-                    if not data:
-                        logger.warning(f'找不到与 "{keyword}" 相关结果')
-                        break
-                        
-                    if page >= total_pages:
-                        break
-                        
-                    self._download_batch(data, category, keyword, content_type)
-                    page += 1
-                    
-                except Exception as e:
-                    logger.error(f"Error processing page {page} for keyword {keyword}: {str(e)}")
+        # 否则使用关键词+分类名称搜索
+        for keyword in keywords:
+            if not keyword.strip():  # 跳过空关键词
+                continue
+                
+            # 如果关键词不包含分类名，自动添加分类名作为后缀
+            search_keyword = keyword
+            if category not in keyword.lower():
+                search_keyword = f"{keyword} {category}"
+            
+            self._process_single_keyword(category, search_keyword, content_type)
+    
+    def _process_single_keyword(self, category: str, keyword: str, content_type: str):
+        """处理单个关键词的搜索和下载"""
+        params = config.DEFAULT_SEARCH_PARAMS.copy()
+        params['query'] = keyword
+        
+        page = 1
+        while page <= config.MAX_PAGES_PER_CATEGORY:
+            try:
+                data, total_pages = self._search_content(keyword, content_type, page)
+                
+                if not data:
+                    logger.warning(f'找不到与 "{keyword}" 相关结果')
                     break
+                    
+                if page >= total_pages:
+                    break
+                    
+                self._download_batch(data, category, keyword, content_type)
+                page += 1
+                
+            except Exception as e:
+                logger.error(f"Error processing page {page} for keyword {keyword}: {str(e)}")
+                break
 
     def _search_content(self, keyword: str, content_type: str, page: int) -> tuple:
         """搜索内容并返回数据"""

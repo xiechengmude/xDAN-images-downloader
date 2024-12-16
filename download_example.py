@@ -49,34 +49,23 @@ def example_2_multiple_keywords():
     categories = {
         'nature': ['forest', 'mountain', 'ocean'],
         'city': ['modern city', 'night city'],
-        'food': ['healthy food', 'dessert']
     }
     
     # 下载每个分类的图片
     for category, keywords in categories.items():
-        try:
-            logger.info(f"开始下载分类: {category}")
-            downloader.process_category(category, keywords, content_type='photos')
-        except Exception as e:
-            logger.error(f"下载分类 {category} 时出错: {str(e)}")
-            continue
+        downloader.process_category(category, keywords, content_type='photos')
 
 def example_3_photos_and_videos():
     """示例3：同时下载图片和视频"""
     logger.info("开始示例3：图片和视频下载")
     downloader = PexelsDownloader()
     
-    # 定义要下载的关键词
-    keywords = ['coffee shop']
-    category = 'business'
-    
     # 下载图片
-    logger.info("下载图片...")
-    downloader.process_category(category, keywords, content_type='photos')
+    keywords = ['modern office']
+    downloader.process_category('office', keywords, content_type='photos')
     
     # 下载视频
-    logger.info("下载视频...")
-    downloader.process_category(category, keywords, content_type='videos')
+    downloader.process_category('office', keywords, content_type='videos')
 
 def example_4_with_config():
     """示例4：使用配置文件中的分类"""
@@ -84,19 +73,19 @@ def example_4_with_config():
     downloader = PexelsDownloader()
     
     # 使用配置文件中定义的分类
-    categories = config.CATEGORIES
-    
-    for category, keywords in categories.items():
-        try:
-            logger.info(f"开始下载配置文件中的分类: {category}")
-            downloader.process_category(category, keywords, content_type='photos')
-        except Exception as e:
-            logger.error(f"下载分类 {category} 时出错: {str(e)}")
-            continue
+    downloader.download_all_categories(content_type='photos')
 
-def example_5_custom_settings():
-    """示例5：自定义下载设置"""
-    logger.info("开始示例5：自定义设置")
+def example_5_category_only():
+    """示例5：只使用分类名称搜索"""
+    logger.info("开始示例5：只使用分类名称搜索")
+    downloader = PexelsDownloader()
+    
+    # 直接使用分类名称搜索，忽略关键词
+    downloader.download_all_categories(content_type='photos', use_category_only=True)
+
+def example_6_custom_settings():
+    """示例6：自定义下载设置"""
+    logger.info("开始示例6：自定义设置")
     downloader = PexelsDownloader()
     
     # 修改配置
@@ -132,18 +121,21 @@ def main():
         # 示例3：图片和视频下载
         # example_3_photos_and_videos()
         
-        # 示例4：使用配置文件
-        example_4_with_config()
+        # 示例4：使用配置文件（带关键词）
+        # example_4_with_config()
         
-        # 示例5：自定义设置
-        # example_5_custom_settings()
+        # 示例5：只使用分类名称搜索
+        example_5_category_only()
+        
+        # 示例6：自定义设置
+        # example_6_custom_settings()
         
     except KeyboardInterrupt:
-        logger.warning("用户中断下载")
+        logger.warning("Process interrupted by user")
     except Exception as e:
-        logger.error(f"运行示例时出错: {str(e)}")
-    finally:
-        logger.info("=== 下载示例结束 ===")
+        logger.error(f"Error running examples: {str(e)}")
+    
+    logger.info("=== 下载示例运行完成 ===")
 
 if __name__ == '__main__':
     main()
