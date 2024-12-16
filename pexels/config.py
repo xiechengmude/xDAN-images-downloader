@@ -13,14 +13,14 @@ DOWNLOAD_DIR = os.path.join(CURRENT_DIR, 'download')      # 下载文件保存�
 # API请求头配置
 HEADERS = {
     'Accept-Language': 'en-US,en;q=0.9',  # 请求语言设置
-    'Secret-Key': 'H2jk9uKnhRmL6WPwh89zBezWvr'  # API密钥
+    'Authorization': 'dESvTyqCMdAFgmvWMP1N9d4rOoCWyfE3d52PFleYdrZlz0MUBjrFHbFg'  # 在这里填入你的 Pexels API key
 }
 
 # 下载配置参数
-PER_PAGE = 24                  # 每页返回的图片/视频数量
+PER_PAGE = 500                # 每页返回的图片/视频数量
 MAX_RETRIES = 3               # 下载失败时的最大重试次数
 RETRY_DELAY = 2               # 重试之间的等待时间（秒）
-MAX_PAGES_PER_CATEGORY = 1    # 每个分类最多下载的页数，防止过度请求
+MAX_PAGES_PER_CATEGORY = 1000    # 每个分类最多下载的页数，防止过度请求
 
 # API端点配置
 ENDPOINTS = {

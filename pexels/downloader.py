@@ -122,16 +122,24 @@ class PexelsDownloader:
         while True:
             try:
                 response = self._session.get(config.ENDPOINTS[content_type], params=params)
-                if response.status_code in [200, 302, 401]:
-                    break
+                logger.debug(f"API Response: Status={response.status_code}, URL={response.url}")
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if not data.get('data'):
+                        logger.warning(f"API返回成功但没有数据: {data}")
+                    return data.get('data', []), data.get('pagination', {}).get('total_pages', 1)
+                elif response.status_code == 401:
+                    logger.error("API认证失败，请检查 API key 是否正确")
+                    raise Exception("API认证失败")
                 else:
-                    raise Exception(response.status_code)
+                    logger.error(f"API请求失败: status_code={response.status_code}, response={response.text}")
+                    raise Exception(f"API请求失败: {response.status_code}")
+                    
             except Exception as e:
-                logger.debug(f"{str(e)}（请忽略，正在自动重试...）")
-                time.sleep(1)
-        
-        data = response.json()
-        return data.get('data', []), data.get('pagination', {}).get('total_pages', 1)
+                logger.error(f"搜索内容时出错: {str(e)}")
+                time.sleep(config.RETRY_DELAY)
+                raise
 
     def _download_batch(self, items: List[Dict], category: str, keyword: str, content_type: str):
         """批量下载内容"""
